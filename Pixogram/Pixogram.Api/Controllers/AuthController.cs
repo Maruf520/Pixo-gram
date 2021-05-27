@@ -8,6 +8,7 @@ using Pixogram.Service.UsersService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Pixogram.Api.Controllers
@@ -18,10 +19,12 @@ namespace Pixogram.Api.Controllers
     {
         private readonly IUserService userService;
         private readonly IAuthenticationService _authenticationService;
-        public AuthController(IUserService userService, IAuthenticationService authenticationService)
+        private readonly IHttpContextAccessor httpContextAccessor;
+        public AuthController(IUserService userService, IAuthenticationService authenticationService, IHttpContextAccessor httpContextAccessor)
         {
             this.userService = userService;
             _authenticationService = authenticationService;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         [HttpPost("register")]
@@ -35,11 +38,11 @@ namespace Pixogram.Api.Controllers
         public async Task<ActionResult<TokenDto>> LoginAsync(UserLogInDto userLogInDto)
         {
 
-
             var token = await _authenticationService.LoginAsync(userLogInDto);
 
-            /*var usertoken = new TokenDto() { Bearer = token.Bearer };*/
             return Ok(token);
         }
+
+
     }
 }

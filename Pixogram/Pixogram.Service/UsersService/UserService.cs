@@ -30,6 +30,8 @@ namespace Pixogram.Service.UsersService
             var createUser = await userRepository.CreateAsync(userTOCreate);
             var createdUser = mapper.Map<GetUserDto>(createUser);
             response.Data = createdUser;
+            response.Success = true;
+            response.Message = "User Registered Successfully";
             return response;
         }
     }

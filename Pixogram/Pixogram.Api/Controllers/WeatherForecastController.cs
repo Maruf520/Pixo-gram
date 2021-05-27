@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Pixogram.Api.Controllers
@@ -20,7 +22,7 @@ namespace Pixogram.Api.Controllers
 
         private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IHttpContextAccessor httpContextAccessor)
         {
             _logger = logger;
         }
@@ -36,6 +38,14 @@ namespace Pixogram.Api.Controllers
                 Summary = Summaries[rng.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+
+        [HttpGet("userId")]
+        public IActionResult GetUserId()
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            string userId = identity.FindFirst("userid")?.Value;
+            return Ok(userId);
         }
     }
 }

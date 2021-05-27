@@ -30,7 +30,7 @@ namespace Pixogram.Service.UsersExtentionService
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.Id.ToString())
+                    new Claim("userid", user.Id.ToString())
 
 
                 }),

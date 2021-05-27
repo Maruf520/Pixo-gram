@@ -10,5 +10,6 @@ namespace Pixogram.Models.DbClient
     public interface IDbClient
     {
         IMongoCollection<User> GetUsersCollection();
+        IMongoCollection<Post> GetPostsCollection();
     }
 }
