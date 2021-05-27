@@ -27,7 +27,7 @@ namespace Pixogram.Api.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(UserRegisterDto userRegisterDto)
         {
-            var user = userService.CreateUserAsync(userRegisterDto);
+            var user = await userService.CreateUserAsync(userRegisterDto);
             return Ok(user);
         }
 
