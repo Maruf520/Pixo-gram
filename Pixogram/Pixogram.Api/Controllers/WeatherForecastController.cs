@@ -40,12 +40,12 @@ namespace Pixogram.Api.Controllers
             .ToArray();
         }
 
-        [HttpGet("userId")]
-        public IActionResult GetUserId()
+        
+        protected string GetUserId()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             string userId = identity.FindFirst("userid")?.Value;
-            return Ok(userId);
+            return userId;
         }
     }
 }

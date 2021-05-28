@@ -119,6 +119,14 @@ namespace Pixogram.Api
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pixogram.Api V1");
             });
 
+            app.UseCors(cors =>
+              cors
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .SetIsOriginAllowed(_ => true)
+              .AllowCredentials()
+           );
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
