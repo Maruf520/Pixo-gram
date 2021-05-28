@@ -33,14 +33,24 @@ namespace Pixogram.Repository.UserRepository
 
         }
 
-        public  Task<User> GetByEmail(string email)
+        public async Task<User> GetByEmail(string email)
         {
-            var cursor =  _user.Find(c => c.Email == email);
-            var user = cursor.FirstOrDefaultAsync();
-            if(user == null)
-            {
-                throw new NotFoundException($"No user exists with name{user}");
-            }
+            var user = await  _user.Find(c => c.Email == email).FirstOrDefaultAsync();
+            
+            return user;
+        }
+
+        public async Task<User> GetByName(string name)
+        {
+            var user = await _user.Find(x => x.UserName == name).FirstOrDefaultAsync();
+
+            return user;
+        }
+
+        public Task<User> GetByPhone(string phone)
+        {
+            var user = _user.Find(x => x.Phone == phone).FirstOrDefaultAsync();
+      
             return user;
         }
     }

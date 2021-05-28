@@ -22,17 +22,39 @@ namespace Pixogram.Service.UsersService
             this.userExtentionService = userExtentionService;
             this.userRepository = userRepository;
         }
-        public async Task<ServiceResponse<GetUserDto>> CreateUserAsync(UserRegisterDto userRegisterDto)
+        public async Task<ServiceResponse<int>> CreateUserAsync(UserRegisterDto userRegisterDto)
         {
-            ServiceResponse<GetUserDto> response = new();
+            ServiceResponse<int> response = new();
             var userTOCreate = userRegisterDto;
+            var existsuser = userRepository.GetByEmail(userRegisterDto.Email);
+            if (existsuser.Result != null)
+            {
+                response.Success = false;
+                response.Message = "Email Already Exists.";
+
+                return response;
+            }
+            else if (userRepository.GetByName(userRegisterDto.UserName).Result != null)
+            {
+                response.Success = false;
+                response.Message = "Userame already exists.";
+                return response;
+            }
+            else if(userRepository.GetByPhone(userRegisterDto.Phone).Result != null)
+            {
+                response.Success = false;
+                response.Message = "Phone number already exists.";
+                return response;
+            }
             userTOCreate.Password = userExtentionService.GetUserHashPassword(userTOCreate.Password);
             var createUser = await userRepository.CreateAsync(userTOCreate);
             var createdUser = mapper.Map<GetUserDto>(createUser);
-            response.Data = createdUser;
+            
             response.Success = true;
             response.Message = "User Registered Successfully";
             return response;
+
+
         }
     }
 }

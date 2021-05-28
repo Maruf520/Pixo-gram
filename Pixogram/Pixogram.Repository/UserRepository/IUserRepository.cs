@@ -12,5 +12,7 @@ namespace Pixogram.Repository.UserRepository
     {
         Task<GetUserDto> CreateAsync(UserRegisterDto userRegisterDto);
         Task<User> GetByEmail(string email);
+        Task<User> GetByName(string name);
+        Task<User> GetByPhone(string phone);
     }
 }

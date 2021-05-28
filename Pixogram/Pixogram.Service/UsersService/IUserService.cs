@@ -10,6 +10,6 @@ namespace Pixogram.Service.UsersService
 {
     public interface IUserService
     {
-        Task<ServiceResponse<GetUserDto>> CreateUserAsync(UserRegisterDto userRegisterDto);
+        Task<ServiceResponse<int>> CreateUserAsync(UserRegisterDto userRegisterDto);
     }
 }
