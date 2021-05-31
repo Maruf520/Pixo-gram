@@ -22,6 +22,7 @@ namespace Pixogram.Repository.PostsRepository
         }
         public GetPostDto Create(Post posts)
         {
+            
             var createPost = post.InsertOneAsync(posts);
 
             var createdPost = mapper.Map<GetPostDto>(posts);

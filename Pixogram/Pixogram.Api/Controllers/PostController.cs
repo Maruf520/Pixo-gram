@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Pixogram.Dtos.PostDtos;
@@ -19,10 +20,12 @@ namespace Pixogram.Api.Controllers
     {
         private readonly IPostService postService;
         private readonly IHttpContextAccessor httpContextAccessor;
-        public PostController(IPostService postService, IHttpContextAccessor httpContextAccessor)
+        private readonly IHostingEnvironment _appEnvironment;
+        public PostController(IPostService postService, IHttpContextAccessor httpContextAccessor, IHostingEnvironment hostingEnvironment)
         {
             this.postService = postService;
             this.httpContextAccessor = httpContextAccessor;
+            _appEnvironment = hostingEnvironment;
         }
 
         protected string GetUserId()
@@ -39,17 +42,26 @@ namespace Pixogram.Api.Controllers
 
             foreach (var formFile in files.image)
             {
+
                 if (formFile.Length > 0)
                 {
-                    string fName = Path.GetRandomFileName();
-                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "images", fName);
+/*                    var fileName = Guid.NewGuid().ToString().Replace("-", "") + Path.GetExtension(files.Name);*/
 
-                    using (var stream = System.IO.File.Create(filePath))
+
+
+                    string fName = Path.GetRandomFileName();
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "images");
+                    if(!Directory.Exists(filePath))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+                    Path.Combine(filePath,fName);
+                    using (var stream = System.IO.File.Create(fName))
                     {
                         await formFile.CopyToAsync(stream);
                         stream.Flush();
 
-                        medias.Add(filePath);
+                        medias.Add(fName);
                     }
                 }
             }
