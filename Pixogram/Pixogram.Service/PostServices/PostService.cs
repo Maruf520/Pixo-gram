@@ -24,13 +24,16 @@ namespace Pixogram.Service.PostServices
         }
         public async Task<GetPostDto> CreatePostAsync(CreatePostDto createPostDto, string userId)
         {
+            var comments = new List<Comment>();
+            var likes = new List<Like>();
             var user = await userRepository.GetById(userId);
-
+            
             var postToCreate = mapper.Map<Post>(createPostDto);
             postToCreate.UserName = user.UserName;
             postToCreate.UserId = user.Id;
             postToCreate.CreatedAt = DateTime.Now;
-           
+            postToCreate.Comments = comments;
+            postToCreate.likes = likes;
             var post =   postRepository.Create(postToCreate);
             var createdPost = mapper.Map<GetPostDto>(post);
 

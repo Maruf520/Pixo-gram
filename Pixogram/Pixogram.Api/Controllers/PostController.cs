@@ -45,10 +45,6 @@ namespace Pixogram.Api.Controllers
 
                 if (formFile.Length > 0)
                 {
-/*                    var fileName = Guid.NewGuid().ToString().Replace("-", "") + Path.GetExtension(files.Name);*/
-
-
-
                     string fName = Path.GetRandomFileName();
                     var filePath = Path.Combine(Directory.GetCurrentDirectory(), "images");
                     if(!Directory.Exists(filePath))
