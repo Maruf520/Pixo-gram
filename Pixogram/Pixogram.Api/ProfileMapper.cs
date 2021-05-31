@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Pixogram.Dtos.PostDtos;
 using Pixogram.Dtos.UserDtos;
 using Pixogram.Models;
 using System;
@@ -15,6 +16,9 @@ namespace Pixogram.Api
             CreateMap<User, UserRegisterDto>();
             CreateMap<UserRegisterDto, User>();
             CreateMap<User, GetUserDto>();
+            CreateMap<CreatePostDto, Post>();
+            CreateMap<Post, GetPostDto>();
+            CreateMap<GetPostDto, Post>();
         }
     }
 }

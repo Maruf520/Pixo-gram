@@ -7,19 +7,15 @@ using System.Threading.Tasks;
 
 namespace Pixogram.Models
 {
-    public class Post
+    public class Comment
     {
         [BsonId]
         [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
         public string Id { get; set; }
-        public string PostBody { get; set; }
         public string UserName { get; set; }
-        public string UserId { get; set; }
-        public string Location { get; set; }
+        public string Message { get; set; }
+        public string UserProfilePic { get; set; }
         public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
-        public List<string> Medias { get; set; }
-        public List<Comment> Comments { get; set; }
-        public List<Like> likes { get; set; }
+        public string PostId { get; set; }
     }
 }

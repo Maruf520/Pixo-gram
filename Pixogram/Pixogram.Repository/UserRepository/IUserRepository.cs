@@ -14,5 +14,7 @@ namespace Pixogram.Repository.UserRepository
         Task<User> GetByEmail(string email);
         Task<User> GetByName(string name);
         Task<User> GetByPhone(string phone);
+        Task<User> GetById(string id);
+        bool Getbyphone(string phone);
     }
 }

@@ -47,11 +47,27 @@ namespace Pixogram.Repository.UserRepository
             return user;
         }
 
-        public Task<User> GetByPhone(string phone)
+        public async Task<User> GetByPhone(string phone)
         {
-            var user = _user.Find(x => x.Phone == phone).FirstOrDefaultAsync();
+            var user = await _user.Find(x => x.Phone == phone).FirstOrDefaultAsync();
       
             return user;
+        }
+
+        public async Task<User> GetById(string id)
+        {
+            var user = await _user.Find(x => x.Id == id).FirstOrDefaultAsync();
+            return user;
+        }
+
+        public bool Getbyphone(string phone)
+        {
+            var user = _user.Find(x => x.Phone == phone).FirstOrDefaultAsync();
+            if(user.Result == null)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

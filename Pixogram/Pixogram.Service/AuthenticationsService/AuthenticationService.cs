@@ -20,20 +20,21 @@ namespace Pixogram.Service.AuthenticationsService
             _userRepository = userRepository;
             _userExtensionService = userExtentionService;
         }
-        public async Task<ServiceResponse<string>> LoginAsync(UserLogInDto loginDto)
+        public async Task<ServiceResponse<string>> LoginAsync(string Email, string Password)
         {
             ServiceResponse<string> response = new();
-            var users = await _userRepository.GetByEmail(loginDto.Email);
+            var users = await _userRepository.GetByEmail(Email);
             if (users == null)
             {
                 throw new UnauthorizedException("No user found with this name");
             }
-            if (!_userExtensionService.CheckIfUserPasswordIsCorrect(loginDto.Password, users.Password))
+            if (!_userExtensionService.CheckIfUserPasswordIsCorrect(Password, users.Password))
             {
                 throw new UnauthorizedException("Incorrect password");
             }
             var usr =  _userExtensionService.GenerateUserAccessToken(users);
             response.Data = usr.Bearer;
+            response.SuccessCode = 200;
             return response;
         }
     }

@@ -28,17 +28,17 @@ namespace Pixogram.Api.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(UserRegisterDto userRegisterDto)
+        public async Task<IActionResult> Register(string Username, string Email, string Phone, string Password)
         {
-            var user = await userService.CreateUserAsync(userRegisterDto);
+            var user = await userService.CreateUserAsync(Username, Email,Phone,Password);
             return Ok(user);
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<TokenDto>> LoginAsync(UserLogInDto userLogInDto)
+        public async Task<ActionResult<TokenDto>> LoginAsync( string Email, string Password)
         {
 
-            var token = await _authenticationService.LoginAsync(userLogInDto);
+            var token = await _authenticationService.LoginAsync(Email, Password);
 
             return Ok(token);
         }
