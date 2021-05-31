@@ -55,13 +55,13 @@ namespace Pixogram.Api.Controllers
                     {
                         Directory.CreateDirectory(filePath);
                     }
-                    Path.Combine(filePath,fName);
-                    using (var stream = System.IO.File.Create(fName))
+                    filePath =  Path.Combine(filePath,fName);
+                    using (var stream = System.IO.File.Create(filePath))
                     {
                         await formFile.CopyToAsync(stream);
                         stream.Flush();
 
-                        medias.Add(fName);
+                        medias.Add(filePath);
                     }
                 }
             }
