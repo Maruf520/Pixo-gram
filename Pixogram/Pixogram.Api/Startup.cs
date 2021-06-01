@@ -147,12 +147,12 @@ namespace Pixogram.Api
 
             app.UseRouting();
             app.UseAuthentication();
-            app.UseStaticFiles(new StaticFileOptions()
+/*            app.UseStaticFiles(new StaticFileOptions()
             {
                 FileProvider = new PhysicalFileProvider(
                         Path.Combine(Directory.GetCurrentDirectory(), "images")),
                 RequestPath = new PathString("/images")
-            });
+            });*/
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
