@@ -57,10 +57,10 @@ namespace Pixogram.Service.UsersService
                 }
             }
             UserRegisterDto userTOCreate = new();
-                userTOCreate.Password = userExtentionService.GetUserHashPassword(Password);
-                userTOCreate.Email = Email;
-                userTOCreate.UserName = Username;
-                userTOCreate.Phone = Phone;
+                userTOCreate.password = userExtentionService.GetUserHashPassword(Password);
+                userTOCreate.email = Email;
+                userTOCreate.username = Username;
+                userTOCreate.phone = Phone;
                 var createUser = await userRepository.CreateAsync(userTOCreate);
                 var createdUser = mapper.Map<GetUserDto>(createUser);
 
