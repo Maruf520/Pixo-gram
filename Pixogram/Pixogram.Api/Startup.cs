@@ -59,6 +59,7 @@ namespace Pixogram.Api
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<ILikeRepository, LikeRepository>();
             services.AddScoped<ILikeService, LikeService>();
+            services.AddDirectoryBrowser();
 
             services.AddMvc(option => option.EnableEndpointRouting = false)
                 .AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
@@ -146,12 +147,12 @@ namespace Pixogram.Api
 
             app.UseRouting();
             app.UseAuthentication();
-
             app.UseStaticFiles(new StaticFileOptions()
             {
                 FileProvider = new PhysicalFileProvider(
-                        Path.Combine(Directory.GetCurrentDirectory(), "images"))
-            }); ;
+                        Path.Combine(Directory.GetCurrentDirectory(), "images")),
+                RequestPath = new PathString("/images")
+            });
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

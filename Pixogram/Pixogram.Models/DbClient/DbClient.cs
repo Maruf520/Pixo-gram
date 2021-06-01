@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace Pixogram.Models.DbClient
     {
         private readonly IMongoCollection<User> _user;
         private readonly IMongoCollection<Post> _post;
+        private readonly IMongoCollection<BsonDocument> _postCollection;
 
         public DbClient(IOptions<PixoDbConfig> bloodDbconfig)
         {
@@ -20,8 +22,10 @@ namespace Pixogram.Models.DbClient
             _user = database.GetCollection<User>("Users");
             _post = database.GetCollection<Post>("Posts");
 
-
+            this._postCollection = database.GetCollection<BsonDocument>("Posts");
         }
+
+
 
         public IMongoCollection<Post> GetPostsCollection()
         {

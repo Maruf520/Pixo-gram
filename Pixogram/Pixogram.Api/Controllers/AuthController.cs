@@ -35,10 +35,10 @@ namespace Pixogram.Api.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<TokenDto>> LoginAsync( string Email, string Password)
+        public async Task<ActionResult<TokenDto>> LoginAsync(string phone, string Email, string Password)
         {
 
-            var token = await _authenticationService.LoginAsync(Email, Password);
+            var token = await _authenticationService.LoginAsync(phone,Email, Password);
 
             return Ok(token);
         }

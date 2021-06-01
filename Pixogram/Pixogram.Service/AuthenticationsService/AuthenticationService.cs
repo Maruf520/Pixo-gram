@@ -20,21 +20,55 @@ namespace Pixogram.Service.AuthenticationsService
             _userRepository = userRepository;
             _userExtensionService = userExtentionService;
         }
-        public async Task<ServiceResponse<string>> LoginAsync(string Email, string Password)
+        public async Task<ServiceResponse<string>> LoginAsync(string phone,string Email, string Password)
         {
             ServiceResponse<string> response = new();
             var users = await _userRepository.GetByEmail(Email);
+            var userbyphone = await _userRepository.GetByPhone(phone);
+            if (phone != null)
+            {
+                if(userbyphone == null)
+                {
+                    response.Success = false;
+                    response.SuccessCode = 500;
+                    response.Message = "No User Found";
+                    return response;
+                }
+                if (!_userExtensionService.CheckIfUserPasswordIsCorrect(Password, userbyphone.Password))
+                {
+                    response.Success = false;
+                    response.SuccessCode = 500;
+                    response.Message = "Password incorrect";
+                    return response;
+                        
+                }
+
+                var usertoken = _userExtensionService.GenerateUserAccessToken(userbyphone);
+                response.Data = usertoken.Bearer;
+                response.SuccessCode = 200;
+                response.Message = "Log in Successfull.";
+                return response;
+            }
+
+            
             if (users == null)
             {
-                throw new UnauthorizedException("No user found with this name");
+                response.Success = false;
+                response.SuccessCode = 500;
+                response.Message = "No User Found.";
+                return response;
             }
             if (!_userExtensionService.CheckIfUserPasswordIsCorrect(Password, users.Password))
             {
-                throw new UnauthorizedException("Incorrect password");
+                response.Success = false;
+                response.SuccessCode = 500;
+                response.Message = "password incorect.";
+                return response;
             }
             var usr =  _userExtensionService.GenerateUserAccessToken(users);
             response.Data = usr.Bearer;
             response.SuccessCode = 200;
+            response.Message = "Log in Successfull.";
             return response;
         }
     }

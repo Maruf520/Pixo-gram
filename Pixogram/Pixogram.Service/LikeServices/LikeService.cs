@@ -22,8 +22,8 @@ namespace Pixogram.Service.LikeServices
         {
             ServiceResponse<int> response = new();
             var user = await userRepository.GetById(userId);
-/*            if (likeRepository.GetById(userId,postId).Result == false)
-            {*/
+            if (likeRepository.GetById(userId, postId).Result == false)
+            {
                 Like like = new();
                 like.UserName = user.UserName;
                 like.UserId = userId;
@@ -34,11 +34,11 @@ namespace Pixogram.Service.LikeServices
                 response.SuccessCode = 200;
                 response.Message = "Successfull";
                 return response;
-/*            }
+            }
             response.Success = false;
             response.Message = "You already liked.";
             response.SuccessCode = 500;
-            return response;*/
+            return response;
         }
     }
 }

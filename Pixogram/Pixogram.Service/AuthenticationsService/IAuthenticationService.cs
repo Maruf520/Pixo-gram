@@ -10,6 +10,6 @@ namespace Pixogram.Service.AuthenticationsService
 {
     public interface IAuthenticationService
     {
-        Task<ServiceResponse<string>> LoginAsync(string Email, string Password);
+        Task<ServiceResponse<string>> LoginAsync(string phone, string Email, string Password);
     }
 }
