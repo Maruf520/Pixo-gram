@@ -30,7 +30,7 @@ namespace Pixogram.Api.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(UserRegisterDto userRegisterDto)
         {
-            var user = await userService.CreateUserAsync(userRegisterDto.username, userRegisterDto.email,userRegisterDto.phone,userRegisterDto.password);
+            var user = await userService.CreateUserAsync(userRegisterDto);
             return Ok(user);
         }
 

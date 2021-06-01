@@ -22,45 +22,33 @@ namespace Pixogram.Service.UsersService
             this.userExtentionService = userExtentionService;
             this.userRepository = userRepository;
         }
-        public async Task<ServiceResponse<int>> CreateUserAsync(string Username, string Email, string Phone, string Password)
+        public async Task<ServiceResponse<int>> CreateUserAsync(UserRegisterDto userRegisterDto)
         {
             ServiceResponse<int> response = new();
-            
-            if(Email != null)
-            {
-                var existsuser = userRepository.GetByEmail(Email);
-                if (existsuser.Result != null)
-                {
-                    response.Success = false;
-                    response.Message = "Email Already Exists.";
+            var userbyphone = userRepository.Getbyphonebool(userRegisterDto.phone);
+            var userbyname = userRepository.GetByUserbool(userRegisterDto.username);
+            var userbyemail = userRepository.GetByEmailbool(userRegisterDto.email);
 
-                    return response;
-                }
+            Dictionary<string, bool> check = new Dictionary<string, bool>()
+            {
+                { "Phone number already exists",userbyphone },
+                { "Email already exists", userbyemail },
+                { "User name already exists", userbyname }
+            };
 
-            }
-            else if(Username != null)
+            if(userbyname || userbyphone || userbyemail)
             {
-                if (userRepository.GetByName(Username).Result != null)
-                {
-                    response.Success = false;
-                    response.Message = "Userame already exists.";
-                    return response;
-                }
+                var exception = check.Where(a => a.Value == true).Select(b=>b.Key).ToList();
+                response.Errors = exception;
+                return response;
             }
-            else if(Phone != null)
-            {
-               if (userRepository.GetByPhone(Phone).Result != null)
-                {
-                    response.Success = false;
-                    response.Message = "Phone number already exists.";
-                    return response;
-                }
-            }
+
+           
             UserRegisterDto userTOCreate = new();
-                userTOCreate.password = userExtentionService.GetUserHashPassword(Password);
-                userTOCreate.email = Email;
-                userTOCreate.username = Username;
-                userTOCreate.phone = Phone;
+                userTOCreate.password = userExtentionService.GetUserHashPassword(userRegisterDto.password);
+                userTOCreate.email = userRegisterDto.email;
+                userTOCreate.username = userRegisterDto.username;
+                userTOCreate.phone = userRegisterDto.phone;
                 var createUser = await userRepository.CreateAsync(userTOCreate);
                 var createdUser = mapper.Map<GetUserDto>(createUser);
 
@@ -143,6 +131,22 @@ namespace Pixogram.Service.UsersService
             return response;
         }
 
-       
+        public async Task<ServiceResponse<string>> UpdateUserAsync(UserUpdateDto user, string userid)
+        {
+            ServiceResponse<string> response = new();
+            var userToUpdate = userRepository.GetById(userid);
+            if(userToUpdate ==  null)
+            {
+                response.Message = "User Not Found.";
+            }
+            User user1 = new();
+            user1.UserName = user.UserName;
+            user1.Phone = user.Phone;
+            user1.Email = user.Email;
+            user1.UserProfileImage = "this is the image link";
+            await userRepository.UpdateAsync(user1, userid);
+            response.Message = "Updated";
+            return response;
+        }
     }
 }

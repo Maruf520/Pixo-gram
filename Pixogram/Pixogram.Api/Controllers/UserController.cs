@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Pixogram.Dtos.UserDtos;
 using Pixogram.Service.UsersService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Pixogram.Api.Controllers
@@ -13,9 +15,11 @@ namespace Pixogram.Api.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService userService;
-        public UserController(IUserService userService)
+        private readonly IHttpContextAccessor httpContextAccessor;
+        public UserController(IUserService userService, IHttpContextAccessor httpContextAccessor)
         {
             this.userService = userService;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         [HttpPost("check")]
@@ -24,6 +28,19 @@ namespace Pixogram.Api.Controllers
         {
             var user = await userService.CheckUserAsyc(email, phone);
             return Ok(user);
+        }
+
+        [HttpPost("profile/update")]
+        public async Task<IActionResult> UpdateProfile(UserUpdateDto userUpdateDto)
+        {
+            var user = userService.UpdateUserAsync(userUpdateDto, GetUserId());
+            return Ok(user);
+        }
+        protected string GetUserId()
+        {
+            var identy = httpContextAccessor.HttpContext.User.Identity as ClaimsIdentity;
+            var userId = identy.FindFirst("userid")?.Value;
+            return userId;
         }
     }
 }

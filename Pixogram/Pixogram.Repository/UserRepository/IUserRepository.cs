@@ -15,7 +15,9 @@ namespace Pixogram.Repository.UserRepository
         Task<User> GetByName(string name);
         Task<User> GetByPhone(string phone);
         Task<User> GetById(string id);
-        bool Getbyphone(string phone);
-        Task<User> UpdateAsync(UserUpdateDto userUpdateDto, string UserId);
+        bool Getbyphonebool(string phone);
+        bool GetByEmailbool(string email);
+        bool GetByUserbool(string username);
+        Task<User> UpdateAsync(User user, string UserId);
     }
 }

@@ -70,10 +70,44 @@ namespace Pixogram.Repository.UserRepository
             return true;
         }
 
-        public Task<User> UpdateAsync(UserUpdateDto userUpdateDto, string UserId)
+        public async Task<User> UpdateAsync(User user, string UserId)
         {
-            var user = _user.Find(x => x.Id == UserId);
-            return (Task<User>)user;
+            var userx = await _user.Find(x => x.Id == UserId).FirstOrDefaultAsync();
+            userx.UserName = user.UserName;
+            userx.Email = user.Email;
+            userx.Phone = user.Phone;
+            var userToUpdate = _user.ReplaceOne(x => x.Id == UserId,userx);
+            return user;
+        }
+
+        public bool Getbyphonebool(string phone)
+        {
+            var user = _user.Find(x => x.Phone == phone).FirstOrDefaultAsync();
+            if(user.Result == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public bool GetByEmailbool(string email)
+        {
+            var user = _user.Find(x => x.Email == email).FirstOrDefaultAsync();
+            if (user.Result == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public bool GetByUserbool(string username)
+        {
+            var user = _user.Find(x => x.UserName == username).FirstOrDefaultAsync();
+            if (user.Result == null)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }
