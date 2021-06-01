@@ -69,5 +69,11 @@ namespace Pixogram.Repository.UserRepository
             }
             return true;
         }
+
+        public Task<User> UpdateAsync(UserUpdateDto userUpdateDto, string UserId)
+        {
+            var user = _user.Find(x => x.Id == UserId);
+            return (Task<User>)user;
+        }
     }
 }

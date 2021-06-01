@@ -18,12 +18,12 @@ namespace Pixogram.Service.LikeServices
             this.likeRepository = likeRepository;
             this.userRepository = userRepository;
         }
-        public async Task<ServiceResponse<int>> CreateLikeAsync(string userId, string postId)
+        public async Task<ServiceResponse<string>> CreateLikeAsync(string userId, string postId)
         {
-            ServiceResponse<int> response = new();
+            ServiceResponse<string> response = new();
             var user = await userRepository.GetById(userId);
-            if (likeRepository.GetById(userId, postId).Result == false)
-            {
+/*            if (likeRepository.GetById(userId, postId).Result == false)
+            {*/
                 Like like = new();
                 like.UserName = user.UserName;
                 like.UserId = userId;
@@ -34,11 +34,11 @@ namespace Pixogram.Service.LikeServices
                 response.SuccessCode = 200;
                 response.Message = "Successfull";
                 return response;
-            }
+/*            }
             response.Success = false;
             response.Message = "You already liked.";
             response.SuccessCode = 500;
-            return response;
+            return response;*/
         }
     }
 }

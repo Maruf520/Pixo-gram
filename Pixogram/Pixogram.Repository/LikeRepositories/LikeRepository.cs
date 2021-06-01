@@ -22,28 +22,47 @@ namespace Pixogram.Repository.LikeRepositories
             this.post = dbClient.GetPostsCollection();
 
         }
-        public async Task<Like> CreateAsync(Like like)
+        public async Task<ServiceResponse<string>> CreateAsync(Like like)
         {
-            var userPost = await post.Find(x => x.Id == like.PostId).FirstOrDefaultAsync();
-            if(userPost.likes == null)
+            ServiceResponse<string> response = new();
+            var userPOst = await post.Find(x => x.Id == like.PostId).FirstOrDefaultAsync();
+            var ifUserPost =  userPOst.likes.Where(m => m.UserId == like.UserId).FirstOrDefault();
+            if(ifUserPost != null)
             {
-                userPost.likes = new List<Like>();
+               var unlike = Builders<Post>.Update.Pull(x => x.likes, like);
+                post.UpdateOne(x => x.Id == like.PostId, unlike);
+                response.SuccessCode = 200;
+                response.Success = true;
+                response.Message = "Unliked";
+                return response;
             }
-            userPost.likes.Add(like);
-            post.ReplaceOne(x => x.Id == like.PostId, userPost);
-            return like;
+            var likeTocreate = Builders<Post>.Update.Push(x => x.likes, like);
+            post.UpdateOne(x => x.Id == like.PostId, likeTocreate);
+            response.SuccessCode = 200;
+            response.Success = true;
+            response.Message = "Liked";
+            return response;
+
+
         }
 
         public async Task<bool> GetById(string userId, string postId)
         {
             var userPOst = await post.Find(x => x.Id == postId).SingleOrDefaultAsync();
+          List<Like> ls = new();
+            /*var z = userPOst.likes.Any(x => x.Id == userId);*/
+            var w = userPOst.likes.Find(x =>x.Id == userId);
+            /*List<Like> lk = new List<Like> { new Like { } };*/
+            var u = Builders<Post>.Update.Pull(x=>x.likes,w);
 /*            var findpost = Builders<BsonDocument>.Filter.Eq(x=>x.Id, postId) & Builders<Post>.Filter.Eq<Post>(x=>x.likes )
             var filter  = Builders<BsonDocument>.Filter.Eq(x =>x.)*/
-
+            
             var asp = Builders<Post>.Filter;
-            var asp1 = asp.Eq(x => x.Id, postId);
-            var x = asp.ElemMatch(doc => doc.likes, el => el.UserId == userId);
-            if(x == null)
+           
+            var asp1 = asp.Eq(x => x.Id, postId) & asp.ElemMatch(doc => doc.likes, el => el.UserId == userId);
+            
+            
+            if(asp1 == null)
             {
                 return true;
             }

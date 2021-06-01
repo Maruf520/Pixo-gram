@@ -9,7 +9,7 @@ namespace Pixogram.Repository.LikeRepositories
 {
     public interface ILikeRepository
     {
-        Task<Like> CreateAsync(Like like);
+        Task<ServiceResponse<string>> CreateAsync(Like like);
         Task<bool> GetById(string userId, string postId);
     }
 }

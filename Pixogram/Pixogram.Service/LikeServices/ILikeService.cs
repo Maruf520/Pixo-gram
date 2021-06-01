@@ -9,6 +9,6 @@ namespace Pixogram.Service.LikeServices
 {
     public interface ILikeService
     {
-        Task<ServiceResponse<int>> CreateLikeAsync(string userId, string postId);
+        Task<ServiceResponse<string>> CreateLikeAsync(string userId, string postId);
     }
 }

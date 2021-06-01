@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace Pixogram.Dtos.UserDtos
 {
-    public class UserLogInDto
+    public class UserUpdateDto
     {
+        public string UserName { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
-        public string Password { get; set; }
+        public string ProfileImage { get; set; }
     }
 }
