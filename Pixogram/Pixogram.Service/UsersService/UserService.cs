@@ -22,13 +22,30 @@ namespace Pixogram.Service.UsersService
             this.userExtentionService = userExtentionService;
             this.userRepository = userRepository;
         }
-        public async Task<ServiceResponse<int>> CreateUserAsync(UserRegisterDto userRegisterDto)
+        public async Task<ServiceResponseForSignup<int>> CreateUserAsync(UserRegisterDto userRegisterDto)
         {
-            ServiceResponse<int> response = new();
+            ServiceResponseForSignup<int> response = new();
+            if(userRegisterDto.email == "" && userRegisterDto.phone == "" && userRegisterDto.username == "")
+            {
+                response.Message = "Please put at least one field.";
+                response.SuccessCode = 500;
+                response.Success = false;
+                return response;
+            }
+            if(userRegisterDto.password == "")
+            {
+                response.Message = "Please set a password to signup.";
+                response.SuccessCode = 500;
+                response.Success = false;
+                return response;
+            }
             var userbyphone = userRepository.Getbyphonebool(userRegisterDto.phone);
-            var userbyname = userRepository.GetByUserbool(userRegisterDto.username);
-            var userbyemail = userRepository.GetByEmailbool(userRegisterDto.email);
+            /* var userbyphone = CheckPhone(userRegisterDto.phone);*/
 
+            /*var userbyname = CHeckUserName(userRegisterDto.username);*/
+            var userbyname = userRepository.GetByUserbool(userRegisterDto.username);
+            /*var userbyemail = CheckEmail(userRegisterDto.email);*/
+            var userbyemail = userRepository.GetByEmailbool(userRegisterDto.email);
             Dictionary<string, bool> check = new Dictionary<string, bool>()
             {
                 { "Phone number already exists",userbyphone },
@@ -40,6 +57,7 @@ namespace Pixogram.Service.UsersService
             {
                 var exception = check.Where(a => a.Value == true).Select(b=>b.Key).ToList();
                 response.Errors = exception;
+                response.Message = exception.ElementAt(0);
                 return response;
             }
 
@@ -51,7 +69,7 @@ namespace Pixogram.Service.UsersService
                 userTOCreate.phone = userRegisterDto.phone;
                 var createUser = await userRepository.CreateAsync(userTOCreate);
                 var createdUser = mapper.Map<GetUserDto>(createUser);
-
+            response.Errors.Add("User Registered Successfully");
                 response.Success = true;
                 response.Message = "User Registered Successfully";
                 return response;
@@ -61,6 +79,7 @@ namespace Pixogram.Service.UsersService
         {
             ServiceResponse<int> response = new();
             var userbyemail = await userRepository.GetByEmail(email);
+            
             var userbyPhone = await userRepository.GetByPhone(phone);
             if (email != null && phone == null)
             {
@@ -147,6 +166,32 @@ namespace Pixogram.Service.UsersService
             await userRepository.UpdateAsync(user1, userid);
             response.Message = "Updated";
             return response;
+        }
+
+        public bool CheckPhone(string phone)
+        {
+            if(phone == "" || userRepository.Getbyphonebool(phone) == false)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public bool CHeckUserName(string username)
+        {
+            if(username == "" || userRepository.GetByUserbool(username) == false)
+            {
+                return false;
+            }
+            return true;
+        }
+        public bool CheckEmail(string email)
+        {
+            if(email == "" || userRepository.GetByEmailbool(email) == false)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

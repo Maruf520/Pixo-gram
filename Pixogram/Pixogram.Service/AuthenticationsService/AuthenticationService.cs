@@ -20,43 +20,76 @@ namespace Pixogram.Service.AuthenticationsService
             _userRepository = userRepository;
             _userExtensionService = userExtentionService;
         }
-        public async Task<ServiceResponse<string>> LoginAsync(string phone,string Email, string Password)
+        public async Task<ServiceResponse<string>> LoginAsync(string userId, string Password)
         {
             ServiceResponse<string> response = new();
-            var users = await _userRepository.GetByEmail(Email);
-            var userbyphone = await _userRepository.GetByPhone(phone);
-            if (phone != null)
+            if(userId == "")
             {
-                if(userbyphone == null)
-                {
-                    response.Success = false;
-                    response.SuccessCode = 500;
-                    response.Message = "No User Found";
-                    return response;
-                }
-                if (!_userExtensionService.CheckIfUserPasswordIsCorrect(Password, userbyphone.Password))
-                {
-                    response.Success = false;
-                    response.SuccessCode = 500;
-                    response.Message = "Password incorrect";
-                    return response;
-                        
-                }
-
-                var usertoken = _userExtensionService.GenerateUserAccessToken(userbyphone);
-                response.Data = usertoken.Bearer;
-                response.SuccessCode = 200;
-                response.Message = "Log in Successfull.";
+                response.Message = "Please input email or phone number to login.";
                 return response;
             }
+            var users = await _userRepository.GetByEmail(userId);
+            var userbyphone = await _userRepository.GetByPhone(userId);
+            var usertoken = "";
+            if (userId != null)
+            {
+                if (userbyphone != null)
+                {
+                    /*                    response.Success = false;
+                                        response.SuccessCode = 500;
+                                        response.Message = "No User Found";
+                                        return response;
+                                    }*/
+                    if (!_userExtensionService.CheckIfUserPasswordIsCorrect(Password, userbyphone.Password))
+                    {
+                        response.Success = false;
+                        response.SuccessCode = 500;
+                        response.Message = "Password incorrect";
+                        return response;
 
-            
+                    }
+                    else
+                    {
+
+                        response.Data = _userExtensionService.GenerateUserAccessToken(userbyphone).Bearer;
+                        response.SuccessCode = 200;
+                        response.Message = "Log in Successfull.";
+                        return response;
+                    }
+                }
+                else if (users != null)
+                {
+                    if (!_userExtensionService.CheckIfUserPasswordIsCorrect(Password, users.Password))
+                    {
+                        response.Success = false;
+                        response.SuccessCode = 500;
+                        response.Message = "Password incorrect";
+                        return response;
+
+                    }
+                    else
+                    {
+                        
+                        response.Data = _userExtensionService.GenerateUserAccessToken(users).Bearer;
+                        response.SuccessCode = 200;
+                        response.Message = "Log in Successfull.";
+                        return response;
+                    }
+                }
+            }
+
+
+
+            response.Success = false;
+            response.SuccessCode = 500;
+            response.Message = "No User Found.";
+            return response;
+/*
+
+
             if (users == null)
             {
-                response.Success = false;
-                response.SuccessCode = 500;
-                response.Message = "No User Found.";
-                return response;
+
             }
             if (!_userExtensionService.CheckIfUserPasswordIsCorrect(Password, users.Password))
             {
@@ -69,7 +102,7 @@ namespace Pixogram.Service.AuthenticationsService
             response.Data = usr.Bearer;
             response.SuccessCode = 200;
             response.Message = "Log in Successfull.";
-            return response;
+            return response;*/
         }
     }
 }

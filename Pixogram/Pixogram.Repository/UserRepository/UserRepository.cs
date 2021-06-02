@@ -83,7 +83,7 @@ namespace Pixogram.Repository.UserRepository
         public bool Getbyphonebool(string phone)
         {
             var user = _user.Find(x => x.Phone == phone).FirstOrDefaultAsync();
-            if(user.Result == null)
+            if(user.Result == null || phone == "")
             {
                 return false;
             }
@@ -93,7 +93,7 @@ namespace Pixogram.Repository.UserRepository
         public bool GetByEmailbool(string email)
         {
             var user = _user.Find(x => x.Email == email).FirstOrDefaultAsync();
-            if (user.Result == null)
+            if (user.Result == null || email == "")
             {
                 return false;
             }
@@ -103,7 +103,7 @@ namespace Pixogram.Repository.UserRepository
         public bool GetByUserbool(string username)
         {
             var user = _user.Find(x => x.UserName == username).FirstOrDefaultAsync();
-            if (user.Result == null)
+            if (user.Result == null || username == "")
             {
                 return false;
             }
