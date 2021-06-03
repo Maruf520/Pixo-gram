@@ -10,8 +10,9 @@ namespace Pixogram.Repository.PostsRepository
 {
     public interface IPostRepository
     {
-        GetPostDto Create(Post posts);
+        Task<Post> Create(Post posts);
         Task<Post> GetbyId(string id);
         List<Post> GetAll();
+        List<Post> GetbyUserId(string id);
     }
 }

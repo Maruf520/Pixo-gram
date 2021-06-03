@@ -12,6 +12,6 @@ namespace Pixogram.Service.UsersService
     {
         Task<ServiceResponseForSignup<int>> CreateUserAsync(UserRegisterDto userRegisterDto);
         Task<ServiceResponse<int>> CheckUserAsyc(string email,string phone);
-        Task<ServiceResponse<string>> UpdateUserAsync(UserUpdateDto user, string userid);
+        Task<ServiceResponse<string>> UpdateUserAsync(UserUpdateDto user, string userid, string imagename);
     }
 }

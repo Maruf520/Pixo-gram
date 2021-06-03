@@ -20,14 +20,12 @@ namespace Pixogram.Repository.PostsRepository
             this.mapper = mapper;
             this.post = dbClient.GetPostsCollection();
         }
-        public GetPostDto Create(Post posts)
+        public async Task<Post> Create(Post posts)
         {
             
             var createPost = post.InsertOneAsync(posts);
 
-            var createdPost = mapper.Map<GetPostDto>(posts);
-
-            return createdPost;
+            return posts;
         }
 
         public List<Post> GetAll()
@@ -41,6 +39,11 @@ namespace Pixogram.Repository.PostsRepository
         public async Task<Post> GetbyId(string id)
         {
             var postById = await post.Find(x => x.Id == id).FirstOrDefaultAsync();
+            return postById;
+        }
+        public  List<Post> GetbyUserId(string id)
+        {
+            var postById =  post.Find(x => x.UserId == id).ToList();
             return postById;
         }
     }

@@ -1,4 +1,5 @@
-﻿using Pixogram.Dtos.UserDtos;
+﻿using Pixogram.Dtos.Token;
+using Pixogram.Dtos.UserDtos;
 using Pixogram.Models;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,6 @@ namespace Pixogram.Service.AuthenticationsService
 {
     public interface IAuthenticationService
     {
-        Task<ServiceResponse<string>> LoginAsync(string userid, string Password);
+        Task<ServiceResponse<TokensDto>> LoginAsync(string userid, string Password);
     }
 }

@@ -25,7 +25,20 @@ namespace Pixogram.Service.UsersService
         public async Task<ServiceResponseForSignup<int>> CreateUserAsync(UserRegisterDto userRegisterDto)
         {
             ServiceResponseForSignup<int> response = new();
-            if(userRegisterDto.email == "" && userRegisterDto.phone == "" && userRegisterDto.username == "")
+            if(userRegisterDto.email == "")
+            {
+                response.Success = false;
+                response.SuccessCode = 500;
+                response.Message = "Please enter you email";
+                return response;
+            }
+            if(userRepository.GetByEmailbool(userRegisterDto.email) == true)
+            {
+                response.Message = "Email already exits.";
+                return response;
+            }
+
+            /*if(userRegisterDto.email == "" && userRegisterDto.phone == "" && userRegisterDto.username == "")
             {
                 response.Message = "Please put at least one field.";
                 response.SuccessCode = 500;
@@ -40,11 +53,11 @@ namespace Pixogram.Service.UsersService
                 return response;
             }
             var userbyphone = userRepository.Getbyphonebool(userRegisterDto.phone);
-            /* var userbyphone = CheckPhone(userRegisterDto.phone);*/
+            *//* var userbyphone = CheckPhone(userRegisterDto.phone);*/
 
-            /*var userbyname = CHeckUserName(userRegisterDto.username);*/
+            /*var userbyname = CHeckUserName(userRegisterDto.username);*//*
             var userbyname = userRepository.GetByUserbool(userRegisterDto.username);
-            /*var userbyemail = CheckEmail(userRegisterDto.email);*/
+            *//*var userbyemail = CheckEmail(userRegisterDto.email);*//*
             var userbyemail = userRepository.GetByEmailbool(userRegisterDto.email);
             Dictionary<string, bool> check = new Dictionary<string, bool>()
             {
@@ -60,19 +73,32 @@ namespace Pixogram.Service.UsersService
                 response.Message = exception.ElementAt(0);
                 return response;
             }
+*/
+            
+            string email = userRegisterDto.email;
+            
+            string emailToTrim = string.Concat(email.TakeWhile((c) => c != '@'));
+            var trimmedEmai = emailToTrim + GenerateRandomNo();
+            bool checkUserName = userRepository.CheckTrimmedEmail(trimmedEmai);
+            while(checkUserName != true)
+            {
+                trimmedEmai = trimmedEmai + 1;
+                
+            }
 
-           
-            UserRegisterDto userTOCreate = new();
-                userTOCreate.password = userExtentionService.GetUserHashPassword(userRegisterDto.password);
-                userTOCreate.email = userRegisterDto.email;
-                userTOCreate.username = userRegisterDto.username;
-                userTOCreate.phone = userRegisterDto.phone;
-                var createUser = await userRepository.CreateAsync(userTOCreate);
-                var createdUser = mapper.Map<GetUserDto>(createUser);
-            response.Errors.Add("User Registered Successfully");
-                response.Success = true;
-                response.Message = "User Registered Successfully";
-                return response;
+           UserRegisterDto userTOCreate = new();
+                          userTOCreate.password = userExtentionService.GetUserHashPassword(userRegisterDto.password);
+                         userTOCreate.email = userRegisterDto.email;
+                         userTOCreate.fullname = userRegisterDto.fullname;
+                         userTOCreate.dateofbirth = userRegisterDto.dateofbirth;
+                         
+                         var createUser = await userRepository.CreateAsync(userTOCreate,trimmedEmai);
+                         var createdUser = mapper.Map<GetUserDto>(createUser);
+                     /*response.Errors.Add("User Registered Successfully");*/
+                         response.Success = true;
+            response.Username = trimmedEmai;
+                         response.Message = "User Registered Successfully";
+            return response;
         }
 
         public async Task<ServiceResponse<int>> CheckUserAsyc(string email, string phone)
@@ -150,19 +176,33 @@ namespace Pixogram.Service.UsersService
             return response;
         }
 
-        public async Task<ServiceResponse<string>> UpdateUserAsync(UserUpdateDto user, string userid)
+        public async Task<ServiceResponse<string>> UpdateUserAsync(UserUpdateDto user, string userid, string imagename)
         {
             ServiceResponse<string> response = new();
             var userToUpdate = userRepository.GetById(userid);
+            if(user.email == "")
+            {
+                response.Success = false;
+                response.Message = "please enter your mail";
+                response.SuccessCode = 403;
+                return response;
+            }
             if(userToUpdate ==  null)
             {
                 response.Message = "User Not Found.";
             }
+            if (userRepository.GetByEmailbool(user.email) == true)
+            {
+                response.Success = false;
+                response.Message = "Email already exists.";
+                response.SuccessCode = 403;
+                return response;
+            }
             User user1 = new();
-            user1.UserName = user.UserName;
-            user1.Phone = user.Phone;
-            user1.Email = user.Email;
-            user1.UserProfileImage = "this is the image link";
+            user1.UserFullName = user.username;
+            user1.Phone = user.phone;
+            user1.Email = user.email;
+            user1.UserProfileImage = imagename;
             await userRepository.UpdateAsync(user1, userid);
             response.Message = "Updated";
             return response;
@@ -192,6 +232,14 @@ namespace Pixogram.Service.UsersService
                 return false;
             }
             return true;
+        }
+
+        public int GenerateRandomNo()
+        {
+            int _min = 1000;
+            int _max = 9999;
+            Random _rdm = new Random();
+            return _rdm.Next(_min, _max);
         }
     }
 }

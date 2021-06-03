@@ -8,9 +8,10 @@ namespace Pixogram.Dtos.UserDtos
 {
     public class UserRegisterDto
     {
-        public string username { get; set; }
+  
+        public string fullname { get; set; }
         public string email { get; set; }
-        public string phone { get; set; }
+        public DateTime dateofbirth { get; set; }
         public string password { get; set; }
     }
 }

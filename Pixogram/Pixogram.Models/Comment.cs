@@ -17,5 +17,6 @@ namespace Pixogram.Models
         public string UserProfilePic { get; set; }
         public DateTime CreatedAt { get; set; }
         public string PostId { get; set; }
+        public User User { get; set; }
     }
 }

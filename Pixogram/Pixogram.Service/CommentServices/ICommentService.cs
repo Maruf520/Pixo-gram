@@ -10,6 +10,7 @@ namespace Pixogram.Service.CommentServices
 {
     public interface ICommentService
     {
-        Task<Post> CreateCommentAsync(string Postid, string comment, string userid);
+        Task<ServiceResponse<string>> CreateCommentAsync(string Postid, string comment, string userid);
+        Task<ServiceResponse<List<Comment>>> GetCommentById (string postId);
     }
 }

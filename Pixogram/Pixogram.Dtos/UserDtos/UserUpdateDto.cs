@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +9,9 @@ namespace Pixogram.Dtos.UserDtos
 {
     public class UserUpdateDto
     {
-        public string UserName { get; set; }
-        public string Email { get; set; }
-        public string Phone { get; set; }
-        public string ProfileImage { get; set; }
+        public string username { get; set; }
+        public string email { get; set; }
+        public string phone { get; set; }
+        public IFormFile image { get; set; }
     }
 }

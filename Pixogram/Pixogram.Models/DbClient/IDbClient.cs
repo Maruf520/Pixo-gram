@@ -12,6 +12,7 @@ namespace Pixogram.Models.DbClient
     {
         IMongoCollection<User> GetUsersCollection();
         IMongoCollection<Post> GetPostsCollection();
+        IMongoCollection<TempData> GetTempDataCollection();
 
     }
 }

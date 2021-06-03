@@ -21,9 +21,15 @@ namespace Pixogram.Repository.UserRepository
             this.mapper = mapper;
             _user = dbclient.GetUsersCollection();
         }
-        public async Task<GetUserDto> CreateAsync(UserRegisterDto userRegisterDto)
+        public async Task<GetUserDto> CreateAsync(UserRegisterDto userRegisterDto, string trimmedemail)
         {
-            var userToCreate = mapper.Map<User>(userRegisterDto);
+            User userToCreate = new();
+            userToCreate.UserFullName = userRegisterDto.fullname;
+            userToCreate.DateOfBirth = userRegisterDto.dateofbirth;
+            userToCreate.UserName = trimmedemail;
+            userToCreate.Email = userRegisterDto.email;
+            userToCreate.Phone = "";
+            userToCreate.Password = userRegisterDto.password;
 
             await _user.InsertOneAsync(userToCreate);
 
@@ -73,10 +79,10 @@ namespace Pixogram.Repository.UserRepository
         public async Task<User> UpdateAsync(User user, string UserId)
         {
             var userx = await _user.Find(x => x.Id == UserId).FirstOrDefaultAsync();
-            userx.UserName = user.UserName;
+            userx.UserFullName = user.UserFullName;
             userx.Email = user.Email;
-            userx.Phone = user.Phone;
-            var userToUpdate = _user.ReplaceOne(x => x.Id == UserId,userx);
+            userx.UserProfileImage = user.UserProfileImage;
+            var userToUpdate =  _user.ReplaceOne(x => x.Id == UserId,userx);
             return user;
         }
 
@@ -108,6 +114,16 @@ namespace Pixogram.Repository.UserRepository
                 return false;
             }
             return true;
+        }
+
+        public bool CheckTrimmedEmail(string username)
+        {
+            var user = _user.Find(x => x.UserName == username).FirstOrDefaultAsync();
+            if(user.Result == null)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

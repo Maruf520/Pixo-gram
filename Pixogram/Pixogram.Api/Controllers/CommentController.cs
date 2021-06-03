@@ -24,12 +24,12 @@ namespace Pixogram.Api.Controllers
 
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateComment( string Postid, string Comment)
+        public async Task<IActionResult> CreateComment( CreateComment createCommentDto)
         {
             try 
             {
                 var userId = GetUserId();
-                var comment = await commentService.CreateCommentAsync(Postid, Comment, userId);
+                var comment = await commentService.CreateCommentAsync(createCommentDto.postid, createCommentDto.commentbody, userId);
                 return Ok(comment);
             }
             catch(Exception e)
@@ -45,6 +45,13 @@ namespace Pixogram.Api.Controllers
             var identy = httpContextAccessor.HttpContext.User.Identity as ClaimsIdentity;
             var userId = identy.FindFirst("userid")?.Value;
             return userId;
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetCommentById(string id)
+        {
+            var comments = await commentService.GetCommentById(id);
+            return Ok(comments);
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Pixogram.Repository.UserRepository
 {
     public interface IUserRepository
     {
-        Task<GetUserDto> CreateAsync(UserRegisterDto userRegisterDto);
+        Task<GetUserDto> CreateAsync(UserRegisterDto userRegisterDto, string trimmedemail);
         Task<User> GetByEmail(string email);
         Task<User> GetByName(string name);
         Task<User> GetByPhone(string phone);
@@ -19,5 +19,6 @@ namespace Pixogram.Repository.UserRepository
         bool GetByEmailbool(string email);
         bool GetByUserbool(string username);
         Task<User> UpdateAsync(User user, string UserId);
+        bool CheckTrimmedEmail(string username);
     }
 }

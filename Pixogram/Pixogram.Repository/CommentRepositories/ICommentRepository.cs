@@ -10,5 +10,6 @@ namespace Pixogram.Repository.CommentRepositories
     public interface ICommentRepository
     {
         Task<Post> CreateAsync(Comment post);
+        Task<List<Comment>> GetById(string id);
     }
 }

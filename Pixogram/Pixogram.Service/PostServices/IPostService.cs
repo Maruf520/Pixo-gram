@@ -10,9 +10,11 @@ namespace Pixogram.Service.PostServices
 {
     public interface IPostService
     {
-        Task<GetPostDto> CreatePostAsync(CreatePostDto createPostDto, string userId);
+        Task<ServiceResponse<string>> CreatePostAsync(CreatePostDto createPostDto, string userId);
         Task<ServiceResponseForMedia<string>> DownloadMediaAsync(string id);
-        Task<ServiceResponse<GetPostDto>> GetPostById(string id);
-        List<Post> GetAllPosts();
+        Task<ServiceResponse<Post>> GetPostById(string id);
+        Task<ServiceResponse<List<Post>>> GetPostUserById(string id);
+        Task<ServiceResponse<List<Post>>> GetAllPosts();
+        
     }
 }

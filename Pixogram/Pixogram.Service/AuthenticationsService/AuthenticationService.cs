@@ -1,4 +1,5 @@
 ﻿using Microsoft.Azure.ServiceBus;
+using Pixogram.Dtos.Token;
 using Pixogram.Dtos.UserDtos;
 using Pixogram.Models;
 using Pixogram.Repository.UserRepository;
@@ -20,9 +21,10 @@ namespace Pixogram.Service.AuthenticationsService
             _userRepository = userRepository;
             _userExtensionService = userExtentionService;
         }
-        public async Task<ServiceResponse<string>> LoginAsync(string userId, string Password)
+        public async Task<ServiceResponse<TokensDto>> LoginAsync(string userId, string Password)
         {
-            ServiceResponse<string> response = new();
+            ServiceResponse<TokensDto> response = new();
+            TokensDto tokensDto = new();
             if(userId == "")
             {
                 response.Message = "Please input email or phone number to login.";
@@ -30,7 +32,6 @@ namespace Pixogram.Service.AuthenticationsService
             }
             var users = await _userRepository.GetByEmail(userId);
             var userbyphone = await _userRepository.GetByPhone(userId);
-            var usertoken = "";
             if (userId != null)
             {
                 if (userbyphone != null)
@@ -50,10 +51,11 @@ namespace Pixogram.Service.AuthenticationsService
                     }
                     else
                     {
-
-                        response.Data = _userExtensionService.GenerateUserAccessToken(userbyphone).Bearer;
+                        var token = _userExtensionService.GenerateUserAccessToken(userbyphone);
+                        response.Data = tokensDto;
                         response.SuccessCode = 200;
                         response.Message = "Log in Successfull.";
+                        
                         return response;
                     }
                 }
@@ -69,10 +71,13 @@ namespace Pixogram.Service.AuthenticationsService
                     }
                     else
                     {
-                        
-                        response.Data = _userExtensionService.GenerateUserAccessToken(users).Bearer;
+
+                        var token = _userExtensionService.GenerateUserAccessToken(users);
+                        tokensDto.Token = token.Bearer;
+                        response.Data = tokensDto;
                         response.SuccessCode = 200;
                         response.Message = "Log in Successfull.";
+                        
                         return response;
                     }
                 }

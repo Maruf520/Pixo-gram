@@ -86,8 +86,17 @@ namespace Pixogram.Api.Controllers
         [HttpGet("getall")]
         public async Task<IActionResult> GetAllPost()
         {
-            var allpost = postService.GetAllPosts();
+            var allpost = await postService.GetAllPosts();
             return Ok(allpost);
         }
+
+        [HttpGet("mypost")]
+
+        public async Task<IActionResult> GetMyPost()
+        {
+            var myposts = await postService.GetPostUserById(GetUserId());
+            return Ok(myposts);
+        }
+
     }
 }

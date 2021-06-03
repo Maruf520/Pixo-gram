@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using Pixogram.Dtos.CommentDtos;
 using Pixogram.Models;
 using Pixogram.Models.DbClient;
 using System;
@@ -28,7 +29,7 @@ namespace Pixogram.Repository.CommentRepositories
                 postData.Comments = new List<Comment>();
             }
             postData.Comments.Add(comment);
-            post.ReplaceOneAsync(a=>a.Id==comment.PostId,postData);
+            await post.ReplaceOneAsync(a=>a.Id==comment.PostId,postData);
             //var cmnt = await post.UpdateOneAsync(Builders<Post>.Filter.Eq(x => x.Id, comment.PostId), Builders<Post>.Update.Push(c => c.Comments, comment));
             Post posts = new Post
             {
@@ -36,5 +37,16 @@ namespace Pixogram.Repository.CommentRepositories
             };
             return posts;
         }
+
+        public async Task<List<Comment>> GetById(string postid)
+        {
+            List<Comment> comments = new();
+            var postComment = await post.Find(x => x.Id == postid).FirstOrDefaultAsync();
+            comments = postComment.Comments.ToList();
+            return comments;
+
+        }
+
+
     }
 }

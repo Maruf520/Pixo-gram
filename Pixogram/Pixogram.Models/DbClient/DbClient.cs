@@ -13,7 +13,7 @@ namespace Pixogram.Models.DbClient
     {
         private readonly IMongoCollection<User> _user;
         private readonly IMongoCollection<Post> _post;
-        private readonly IMongoCollection<BsonDocument> _postCollection;
+        private readonly IMongoCollection<TempData> _temp;
 
         public DbClient(IOptions<PixoDbConfig> bloodDbconfig)
         {
@@ -21,8 +21,8 @@ namespace Pixogram.Models.DbClient
             var database = client.GetDatabase("PixoDb");
             _user = database.GetCollection<User>("Users");
             _post = database.GetCollection<Post>("Posts");
+            _temp = database.GetCollection<TempData>("TempDatas");
 
-            this._postCollection = database.GetCollection<BsonDocument>("Posts");
         }
 
 
@@ -30,6 +30,11 @@ namespace Pixogram.Models.DbClient
         public IMongoCollection<Post> GetPostsCollection()
         {
             return _post;
+        }
+
+        public IMongoCollection<TempData> GetTempDataCollection()
+        {
+            return _temp;
         }
 
         public IMongoCollection<User> GetUsersCollection()

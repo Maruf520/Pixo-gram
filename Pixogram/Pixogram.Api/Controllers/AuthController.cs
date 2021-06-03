@@ -1,9 +1,11 @@
 ﻿
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Pixogram.Dtos.OtpDtos;
 using Pixogram.Dtos.UserDtos;
 using Pixogram.Models;
 using Pixogram.Service.AuthenticationsService;
+using Pixogram.Service.OtpServices;
 using Pixogram.Service.UsersService;
 using System;
 using System.Collections.Generic;
@@ -20,11 +22,13 @@ namespace Pixogram.Api.Controllers
         private readonly IUserService userService;
         private readonly IAuthenticationService _authenticationService;
         private readonly IHttpContextAccessor httpContextAccessor;
-        public AuthController(IUserService userService, IAuthenticationService authenticationService, IHttpContextAccessor httpContextAccessor)
+        private readonly IOtpServices otpServices;
+        public AuthController(IUserService userService, IAuthenticationService authenticationService, IHttpContextAccessor httpContextAccessor, IOtpServices otpServices)
         {
             this.userService = userService;
             _authenticationService = authenticationService;
             this.httpContextAccessor = httpContextAccessor;
+            this.otpServices = otpServices;
         }
 
         [HttpPost("register")]
@@ -42,6 +46,22 @@ namespace Pixogram.Api.Controllers
 
             return Ok(token);
         }
+
+        [HttpPost("createotp")]
+        public async Task<IActionResult> CreateOtp(OtpDto createOtpDto)
+        {
+            var otp = await otpServices.CreateOtp(createOtpDto.email);
+            return Ok(otp);
+        }
+
+        [HttpPost("otp/verify")]
+
+        public async Task<IActionResult> VerifyOtp(CreateOtpDto createOtpDtov)
+        {
+            var otp = await otpServices.VerifyOtp(createOtpDtov);
+            return Ok(otp);
+        }
+
 
 
     }

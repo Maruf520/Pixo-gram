@@ -15,11 +15,13 @@ using Microsoft.OpenApi.Models;
 using Pixogram.Models.DbClient;
 using Pixogram.Repository.CommentRepositories;
 using Pixogram.Repository.LikeRepositories;
+using Pixogram.Repository.OtpRepositories;
 using Pixogram.Repository.PostsRepository;
 using Pixogram.Repository.UserRepository;
 using Pixogram.Service.AuthenticationsService;
 using Pixogram.Service.CommentServices;
 using Pixogram.Service.LikeServices;
+using Pixogram.Service.OtpServices;
 using Pixogram.Service.PostServices;
 using Pixogram.Service.UsersExtentionService;
 using Pixogram.Service.UsersService;
@@ -60,7 +62,8 @@ namespace Pixogram.Api
             services.AddScoped<ILikeRepository, LikeRepository>();
             services.AddScoped<ILikeService, LikeService>();
             services.AddDirectoryBrowser();
-
+            services.AddScoped<IOtpServices, OtpService>();
+            services.AddScoped<IotpRepository, OtpRepository>();
             services.AddMvc(option => option.EnableEndpointRouting = false)
                 .AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

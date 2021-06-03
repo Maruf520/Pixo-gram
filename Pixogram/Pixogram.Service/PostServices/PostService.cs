@@ -22,8 +22,9 @@ namespace Pixogram.Service.PostServices
             this.postRepository = postRepository;
             this.mapper = mapper;
         }
-        public async Task<GetPostDto> CreatePostAsync(CreatePostDto createPostDto, string userId)
+        public async Task<ServiceResponse<string>> CreatePostAsync(CreatePostDto createPostDto, string userId)
         {
+            ServiceResponse<string> response = new();
             var comments = new List<Comment>();
             var likes = new List<Like>();
             var user = await userRepository.GetById(userId);
@@ -34,10 +35,13 @@ namespace Pixogram.Service.PostServices
             postToCreate.CreatedAt = DateTime.Now;
             postToCreate.Comments = comments;
             postToCreate.likes = likes;
+            postToCreate.User = user;
             var post =   postRepository.Create(postToCreate);
-            var createdPost = mapper.Map<GetPostDto>(post);
-
-            return post;
+            response.Data = "";
+            response.Success = true;
+            response.Message = "Post Created";
+            response.SuccessCode = 200;
+            return response;
 
 
         }
@@ -65,30 +69,66 @@ namespace Pixogram.Service.PostServices
 
         }
 
-        public List<Post> GetAllPosts()
+        public async Task<ServiceResponse<List<Post>>> GetAllPosts()
         {
-            List<Post> posts = new List<Post>();
-            var allpost = postRepository.GetAll();
-            posts = allpost;
-            return posts;
+            ServiceResponse<List<Post>> response = new();
+            List<Post> postss = new List<Post>();
+
+            var allpost = postRepository.GetAll().ToList();
+            postss = allpost;
+
+            response.Data = postss;
+            response.Success = true;
+            response.Message = "all posts";
+            response.SuccessCode = 200;
+            return response;
         }
 
-        public async Task<ServiceResponse<GetPostDto>> GetPostById(string id)
+        public async Task<ServiceResponse<Post>> GetPostById(string id)
         {
 
-            ServiceResponse<GetPostDto> response = new();
+            ServiceResponse<Post> response = new();
+            Post posts = new();
             var post = await postRepository.GetbyId(id);
-
+            posts = post;
             if(post == null)
             {
                 response.Success = false;
                 response.Message = "Post Not Found";
                 response.SuccessCode = 204;
+
                 return response;
             }
-            var postToReturn = mapper.Map<GetPostDto>(post);
-            response.Data = postToReturn;
+            response.Data = posts;
             response.Success = true;
+            response.SuccessCode = 200;
+            return response;
+        }
+
+        public async Task<ServiceResponse<List<Post>>> GetPostUserById(string id)
+        {
+            /*            ServiceResponse<Post> response = new();
+                        List<Post> postss = new List<Post>();
+                        postss = null;
+                        GetPostDto postDto = new();
+                        var allpost = postRepository.GetbyUserId(id).ToList();
+                        postss = allpost;
+                        postDto.posts = postss;
+                        response.Data = postDto;
+                        response.Success = true;
+                        response.Message = "all posts";
+                        response.SuccessCode = 200;
+                        return response;*/
+
+            ServiceResponse<List<Post>> response = new();
+            List<Post> postss = new List<Post>();
+
+            var allpost = postRepository.GetbyUserId(id).ToList();
+            postss = allpost;
+
+            response.Data = postss;
+            response.Success = true;
+            response.Message = "all posts";
             response.SuccessCode = 200;
             return response;
         }

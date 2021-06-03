@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Pixogram.Dtos.CreateLikeDtos;
 using Pixogram.Service.LikeServices;
 using System;
 using System.Collections.Generic;
@@ -23,10 +24,10 @@ namespace Pixogram.Api.Controllers
             this.httpContextAccessor = httpContextAccessor;
         }
 
-        [HttpPost("create/postid/{id}")]
-        public async Task<IActionResult> CreateReact(string id)
+        [HttpPost("create/postid")]
+        public async Task<IActionResult> CreateReact(CreateLike id)
         {
-            var react = await likeService.CreateLikeAsync(GetUserId(), id);
+            var react = await likeService.CreateLikeAsync(GetUserId(), id.postid);
             return Ok(react);
         }
 

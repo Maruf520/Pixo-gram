@@ -21,5 +21,6 @@ namespace Pixogram.Models
         public List<string> Medias { get; set; }
         public List<Comment> Comments { get; set; }
         public List<Like> likes { get; set; }
+        public User User { get; set; }
     }
 }

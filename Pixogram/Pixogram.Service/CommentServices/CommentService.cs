@@ -26,22 +26,78 @@ namespace Pixogram.Service.CommentServices
             this.postRepository = postRepository;
             this.commentRepository = commentRepository;
         }
-        public async Task<Post> CreateCommentAsync(string postid, string comments, string userid)
+        public async Task<ServiceResponse<string>> CreateCommentAsync(string postid, string comments, string userid)
         {
             var user = await userRepository.GetById(userid);
             var post = await postRepository.GetbyId(postid);
-
+            ServiceResponse<string> response = new();
             Comment Comments = new Comment()
             {
                    UserName = user.UserName,
                    Message = comments,
                    CreatedAt = DateTime.Now,
                    PostId = post.Id,
-                   UserProfilePic = "No Pic"  
+                   UserProfilePic = user.UserProfileImage,
+                   User = user
+                   
             };
+/*            Post post1 = new();
+            post1.Comments = ;*/
 
             var comment = await  commentRepository.CreateAsync(Comments);
-            return comment;
+            response.Message = "Successfull";
+            response.Success = true;
+            response.SuccessCode = 200;
+            return response;
+        }
+        public async Task<ServiceResponse<List<Comment>>> GetCommentById(string postId)
+        {
+            ServiceResponse<List<Comment>> response = new();
+            if(postId == "")
+            {
+                response.Success = false;
+                response.SuccessCode = 404;
+                response.Message = "Please enter post id.";
+                return response;
+            }
+            if (postRepository.GetbyId(postId) == null)
+            {
+                response.Success = false;
+                response.SuccessCode = 404;
+                response.Message = "Post Not Found.";
+                return response;
+            }
+            /*
+                        ServiceResponse<List<Post>> response = new();
+                        List<Post> postss = new List<Post>();
+
+                        var allpost = postRepository.GetbyUserId(id).ToList();
+                        postss = allpost;
+
+                        response.Data = postss;
+                        response.Success = true;
+                        response.Message = "all posts";
+                        response.SuccessCode = 200;
+                        return response;*/
+
+            List<Comment> comments = new();
+           
+            var commentList = await commentRepository.GetById(postId);
+            comments = commentList;
+            
+            if(commentList.Count() == 0)
+            {
+                response.Data = comments;
+                response.Success = false;
+                response.SuccessCode = 404;
+                response.Message = "No Comment";
+                return response;
+            }
+            response.Data = comments;
+            response.Success = false;
+            response.SuccessCode = 200;
+            return response;
+
         }
     }
 }
