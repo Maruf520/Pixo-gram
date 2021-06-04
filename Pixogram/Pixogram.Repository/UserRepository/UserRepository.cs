@@ -25,10 +25,11 @@ namespace Pixogram.Repository.UserRepository
         {
             User userToCreate = new();
             userToCreate.UserFullName = userRegisterDto.fullname;
-            userToCreate.DateOfBirth = userRegisterDto.dateofbirth;
+            
             userToCreate.UserName = trimmedemail;
             userToCreate.Email = userRegisterDto.email;
-            userToCreate.Phone = "";
+            userToCreate.UserProfileImage = "";
+           /* userToCreate.Phone = "";*/
             userToCreate.Password = userRegisterDto.password;
 
             await _user.InsertOneAsync(userToCreate);
@@ -55,7 +56,7 @@ namespace Pixogram.Repository.UserRepository
 
         public async Task<User> GetByPhone(string phone)
         {
-            var user = await _user.Find(x => x.Phone == phone).FirstOrDefaultAsync();
+            var user = await _user.Find(x => x.UserName == phone).FirstOrDefaultAsync();
       
             return user;
         }
@@ -66,7 +67,7 @@ namespace Pixogram.Repository.UserRepository
             return user;
         }
 
-        public bool Getbyphone(string phone)
+/*        public bool Getbyphone(string phone)
         {
             var user = _user.Find(x => x.Phone == phone).FirstOrDefaultAsync();
             if(user.Result == null)
@@ -74,7 +75,7 @@ namespace Pixogram.Repository.UserRepository
                 return false;
             }
             return true;
-        }
+        }*/
 
         public async Task<User> UpdateAsync(User user, string UserId)
         {
@@ -88,7 +89,7 @@ namespace Pixogram.Repository.UserRepository
 
         public bool Getbyphonebool(string phone)
         {
-            var user = _user.Find(x => x.Phone == phone).FirstOrDefaultAsync();
+            var user = _user.Find(x => x.UserName == phone).FirstOrDefaultAsync();
             if(user.Result == null || phone == "")
             {
                 return false;

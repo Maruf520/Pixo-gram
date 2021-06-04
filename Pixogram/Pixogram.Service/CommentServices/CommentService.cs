@@ -33,18 +33,16 @@ namespace Pixogram.Service.CommentServices
             ServiceResponse<string> response = new();
             Comment Comments = new Comment()
             {
-                   UserName = user.UserName,
-                   Message = comments,
-                   CreatedAt = DateTime.Now,
-                   PostId = post.Id,
-                   UserProfilePic = user.UserProfileImage,
-                   User = user
+                Message = comments,
+                CreatedAt = DateTime.Now,
+                User = user,
+                Id = "60b9b16a6c44594bcd3a6999"
                    
             };
 /*            Post post1 = new();
             post1.Comments = ;*/
 
-            var comment = await  commentRepository.CreateAsync(Comments);
+            var comment = await  commentRepository.CreateAsync(Comments, postid);
             response.Message = "Successfull";
             response.Success = true;
             response.SuccessCode = 200;

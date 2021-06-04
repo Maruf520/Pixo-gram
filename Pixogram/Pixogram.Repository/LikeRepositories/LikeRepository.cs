@@ -22,22 +22,22 @@ namespace Pixogram.Repository.LikeRepositories
             this.post = dbClient.GetPostsCollection();
 
         }
-        public async Task<ServiceResponse<string>> CreateAsync(Like like)
+        public async Task<ServiceResponse<string>> CreateAsync(Like like, string postid)
         {
             ServiceResponse<string> response = new();
-            var userPOst = await post.Find(x => x.Id == like.PostId).FirstOrDefaultAsync();
-            var ifUserPost =  userPOst.likes.Where(m => m.UserId == like.UserId).FirstOrDefault();
+            var userPOst = await post.Find(x => x.Id == postid).FirstOrDefaultAsync();
+            var ifUserPost =  userPOst.likes.Where(m => m.User.Id == like.User.Id).FirstOrDefault();
             if(ifUserPost != null)
             {
                var unlike = Builders<Post>.Update.Pull(x => x.likes, like);
-                post.UpdateOne(x => x.Id == like.PostId, unlike);
+                post.UpdateOne(x => x.Id == postid, unlike);
                 response.SuccessCode = 200;
                 response.Success = true;
                 response.Message = "Unliked";
                 return response;
             }
             var likeTocreate = Builders<Post>.Update.Push(x => x.likes, like);
-            post.UpdateOne(x => x.Id == like.PostId, likeTocreate);
+            post.UpdateOne(x => x.Id == postid, likeTocreate);
             response.SuccessCode = 200;
             response.Success = true;
             response.Message = "Liked";
@@ -59,7 +59,7 @@ namespace Pixogram.Repository.LikeRepositories
             
             var asp = Builders<Post>.Filter;
            
-            var asp1 = asp.Eq(x => x.Id, postId) & asp.ElemMatch(doc => doc.likes, el => el.UserId == userId);
+            var asp1 = asp.Eq(x => x.Id, postId) & asp.ElemMatch(doc => doc.likes, el => el.User.Id == userId);
             
             
             if(asp1 == null)

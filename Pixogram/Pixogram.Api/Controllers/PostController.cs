@@ -52,12 +52,13 @@ namespace Pixogram.Api.Controllers
                         Directory.CreateDirectory(filePath);
                     }
                     filePath =  Path.Combine(filePath,fName);
+                    var pathdb = "images/" + fName;
                     using (var stream = System.IO.File.Create(filePath))
                     {
                         await formFile.CopyToAsync(stream);
                         stream.Flush();
 
-                        medias.Add(filePath);
+                        medias.Add(pathdb);
                     }
                 }
             }

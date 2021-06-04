@@ -22,14 +22,24 @@ namespace Pixogram.Service.LikeServices
         {
             ServiceResponse<string> response = new();
             var user = await userRepository.GetById(userId);
-/*            if (likeRepository.GetById(userId, postId).Result == false)
-            {*/
-                Like like = new();
-                like.UserName = user.UserName;
-                like.UserId = userId;
-            like.PostId = postId;
-                like.UserProfileImage = "no image";
-                var createLike = await likeRepository.CreateAsync(like);
+            /*            if (likeRepository.GetById(userId, postId).Result == false)
+                        {*/
+            User user1 = new User
+            {
+                Id = user.Id,
+                UserFullName = user.UserFullName,
+                UserName = user.UserName,
+                Email = user.Email,
+                UserProfileImage = user.UserProfileImage,
+                Password = ""
+            };
+            Like like = new();
+            /*like.UserName = user.UserName;*/
+            /*                like.UserId = userId;
+                        like.PostId = postId;*/
+            /*like.UserProfileImage = "no image";*/
+            like.User = user1;
+                var createLike = await likeRepository.CreateAsync(like, postId);
                 response.Success = true;
                 response.SuccessCode = 200;
                 response.Message = "Successfull";

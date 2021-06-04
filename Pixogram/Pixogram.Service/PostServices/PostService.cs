@@ -28,14 +28,22 @@ namespace Pixogram.Service.PostServices
             var comments = new List<Comment>();
             var likes = new List<Like>();
             var user = await userRepository.GetById(userId);
+            User user1 = new User
+            {
+                Id = user.Id,
+                UserFullName = user.UserFullName,
+                UserName = user.UserName,
+                Email = user.Email,
+                UserProfileImage = user.UserProfileImage,
+                Password = ""  
+            };
+            
             
             var postToCreate = mapper.Map<Post>(createPostDto);
-            postToCreate.UserName = user.UserName;
-            postToCreate.UserId = user.Id;
             postToCreate.CreatedAt = DateTime.Now;
             postToCreate.Comments = comments;
             postToCreate.likes = likes;
-            postToCreate.User = user;
+            postToCreate.User = user1;
             var post =   postRepository.Create(postToCreate);
             response.Data = "";
             response.Success = true;

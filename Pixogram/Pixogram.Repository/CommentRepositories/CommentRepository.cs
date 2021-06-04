@@ -21,19 +21,19 @@ namespace Pixogram.Repository.CommentRepositories
             this.mapper = mapper;
             this.post = dbClient.GetPostsCollection();
         }
-        public async Task<Post> CreateAsync(Comment comment)
+        public async Task<Post> CreateAsync(Comment comment, string postid)
         {
-            var postData = await post.Find(a => a.Id == comment.PostId).FirstOrDefaultAsync();
+            var postData = await post.Find(a => a.Id == postid).FirstOrDefaultAsync();
             if(postData.Comments == null)
             {
                 postData.Comments = new List<Comment>();
             }
             postData.Comments.Add(comment);
-            await post.ReplaceOneAsync(a=>a.Id==comment.PostId,postData);
+            await post.ReplaceOneAsync(a=>a.Id==postid,postData);
             //var cmnt = await post.UpdateOneAsync(Builders<Post>.Filter.Eq(x => x.Id, comment.PostId), Builders<Post>.Update.Push(c => c.Comments, comment));
             Post posts = new Post
             {
-                UserName = comment.UserName
+               
             };
             return posts;
         }

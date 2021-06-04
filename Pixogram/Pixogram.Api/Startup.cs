@@ -2,14 +2,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Pixogram.Models.DbClient;
@@ -25,12 +21,9 @@ using Pixogram.Service.OtpServices;
 using Pixogram.Service.PostServices;
 using Pixogram.Service.UsersExtentionService;
 using Pixogram.Service.UsersService;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Pixogram.Api
 {
@@ -150,12 +143,18 @@ namespace Pixogram.Api
 
             app.UseRouting();
             app.UseAuthentication();
-/*            app.UseStaticFiles(new StaticFileOptions()
+            /*            app.UseStaticFiles(new StaticFileOptions()
+                        {
+                            FileProvider = new PhysicalFileProvider(
+                                    Path.Combine(Directory.GetCurrentDirectory(), "images")),
+                            RequestPath = new PathString("/images")
+                        });*/
+            app.UseStaticFiles(new StaticFileOptions()
             {
-                FileProvider = new PhysicalFileProvider(
-                        Path.Combine(Directory.GetCurrentDirectory(), "images")),
-                RequestPath = new PathString("/images")
-            });*/
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "images")),
+                RequestPath = new PathString("/admin")
+            });
+            /*        app.UseStaticFiles();*/
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

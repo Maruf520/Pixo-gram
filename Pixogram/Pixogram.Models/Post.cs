@@ -13,8 +13,8 @@ namespace Pixogram.Models
         [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
         public string Id { get; set; }
         public string PostBody { get; set; }
-        public string UserName { get; set; }
-        public string UserId { get; set; }
+/*        public string UserName { get; set; }
+        public string UserId { get; set; }*/
         public string Location { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }

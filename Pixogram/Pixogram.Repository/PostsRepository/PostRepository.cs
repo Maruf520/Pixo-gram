@@ -43,7 +43,7 @@ namespace Pixogram.Repository.PostsRepository
         }
         public  List<Post> GetbyUserId(string id)
         {
-            var postById =  post.Find(x => x.UserId == id).ToList();
+            var postById =  post.Find(x => x.User.Id == id).ToList();
             return postById;
         }
     }
