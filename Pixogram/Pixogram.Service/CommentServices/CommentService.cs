@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MongoDB.Bson;
 using Pixogram.Dtos.CommentDtos;
 using Pixogram.Models;
 using Pixogram.Repository.CommentRepositories;
@@ -26,32 +27,62 @@ namespace Pixogram.Service.CommentServices
             this.postRepository = postRepository;
             this.commentRepository = commentRepository;
         }
+        private static Random s_Generator = new Random();
         public async Task<ServiceResponse<string>> CreateCommentAsync(string postid, string comments, string userid)
         {
             var user = await userRepository.GetById(userid);
             var post = await postRepository.GetbyId(postid);
             ServiceResponse<string> response = new();
+            var objectid = RandomUniqueHexShuffle(24, 4);
+            User user1 = new User
+            {
+                Id = user.Id,
+                UserFullName = user.UserFullName,
+                UserName = user.UserName,
+                Email = user.Email,
+                UserProfileImage = user.UserProfileImage,
+                Password = ""
+            };
             Comment Comments = new Comment()
             {
                 Message = comments,
                 CreatedAt = DateTime.Now,
-                User = user,
-                Id = "60b9b16a6c44594bcd3a6999"
-                   
+                User = user1,
+                Id = objectid[0].ToString().ToLower()
             };
-/*            Post post1 = new();
-            post1.Comments = ;*/
 
-            var comment = await  commentRepository.CreateAsync(Comments, postid);
+            var comment = await commentRepository.CreateAsync(Comments, postid);
             response.Message = "Successfull";
             response.Success = true;
             response.SuccessCode = 200;
             return response;
         }
+
+        private object[] RandomUniqueHexShuffle(int length, int count)
+        {
+            {
+                HashSet<string> used = new HashSet<string>();
+
+                string[] result = new string[count];
+
+                for (int i = 0; i < result.Length;)
+                {
+                    string value = string.Concat(Enumerable
+                      .Range(0, length)
+                      .Select(j => s_Generator.Next(0, 16).ToString("x")));
+
+                    if (used.Add(value))
+                        result[i++] = value;
+                }
+
+                return result;
+            }
+        }
+
         public async Task<ServiceResponse<List<Comment>>> GetCommentById(string postId)
         {
             ServiceResponse<List<Comment>> response = new();
-            if(postId == "")
+            if (postId == "")
             {
                 response.Success = false;
                 response.SuccessCode = 404;
@@ -65,25 +96,14 @@ namespace Pixogram.Service.CommentServices
                 response.Message = "Post Not Found.";
                 return response;
             }
-            /*
-                        ServiceResponse<List<Post>> response = new();
-                        List<Post> postss = new List<Post>();
 
-                        var allpost = postRepository.GetbyUserId(id).ToList();
-                        postss = allpost;
-
-                        response.Data = postss;
-                        response.Success = true;
-                        response.Message = "all posts";
-                        response.SuccessCode = 200;
-                        return response;*/
 
             List<Comment> comments = new();
-           
+
             var commentList = await commentRepository.GetById(postId);
             comments = commentList;
-            
-            if(commentList.Count() == 0)
+
+            if (commentList.Count() == 0)
             {
                 response.Data = comments;
                 response.Success = false;
@@ -97,5 +117,6 @@ namespace Pixogram.Service.CommentServices
             return response;
 
         }
+
     }
 }

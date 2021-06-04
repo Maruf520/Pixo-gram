@@ -18,6 +18,7 @@ namespace Pixogram.Service.LikeServices
             this.likeRepository = likeRepository;
             this.userRepository = userRepository;
         }
+        private static Random s_Generator = new Random();
         public async Task<ServiceResponse<string>> CreateLikeAsync(string userId, string postId)
         {
             ServiceResponse<string> response = new();
@@ -33,7 +34,11 @@ namespace Pixogram.Service.LikeServices
                 UserProfileImage = user.UserProfileImage,
                 Password = ""
             };
+
+            var objectid = RandomUniqueHexShuffle(24, 4);
+
             Like like = new();
+            like.Id = objectid[0].ToString().ToLower();
             /*like.UserName = user.UserName;*/
             /*                like.UserId = userId;
                         like.PostId = postId;*/
@@ -50,5 +55,26 @@ namespace Pixogram.Service.LikeServices
             response.SuccessCode = 500;
             return response;*/
         }
+        private object[] RandomUniqueHexShuffle(int length, int count)
+        {
+            {
+                HashSet<string> used = new HashSet<string>();
+
+                string[] result = new string[count];
+
+                for (int i = 0; i < result.Length;)
+                {
+                    string value = string.Concat(Enumerable
+                      .Range(0, length)
+                      .Select(j => s_Generator.Next(0, 16).ToString("x")));
+
+                    if (used.Add(value))
+                        result[i++] = value;
+                }
+
+                return result;
+            }
+        }
+
     }
 }

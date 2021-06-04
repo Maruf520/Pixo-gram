@@ -116,7 +116,7 @@ namespace Pixogram.Service.UsersService
                 else
                 {
                     response.Message = "This email is available";
-                    response.Success = false;
+                    response.Success = true;
                     response.SuccessCode = 200;
                     return response;
                 }
@@ -128,7 +128,7 @@ namespace Pixogram.Service.UsersService
                 if (userbyPhone == null)
                 {
                     response.Message = "This phone is avaiable";
-                    response.Success = false;
+                    response.Success = true;
                     response.SuccessCode = 200;
                     return response;
                 }
