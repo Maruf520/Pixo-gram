@@ -46,19 +46,22 @@ namespace Pixogram.Api.Controllers
                 if (formFile.Length > 0)
                 {
                     string fName = Path.GetRandomFileName();
+                    
+                    var getext = Path.GetExtension(files.image.ToString());
+                    var filename = Path.ChangeExtension(fName,"png");
                     var filePath = Path.Combine(Directory.GetCurrentDirectory(), "images");
                     if(!Directory.Exists(filePath))
                     {
                         Directory.CreateDirectory(filePath);
                     }
-                    filePath =  Path.Combine(filePath,fName);
+                    filePath =  Path.Combine(filePath, filename);
                     var pathdb = "images/" + fName;
                     using (var stream = System.IO.File.Create(filePath))
                     {
                         await formFile.CopyToAsync(stream);
                         stream.Flush();
 
-                        medias.Add(pathdb);
+                        medias.Add(filename);
                     }
                 }
             }

@@ -17,8 +17,4 @@
     <ProjectReference Include="..\Pixogram.Service\Pixogram.Service.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="images\" />
-  </ItemGroup>
-
 </Project>

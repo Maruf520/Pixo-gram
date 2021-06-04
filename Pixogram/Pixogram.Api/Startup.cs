@@ -140,21 +140,17 @@ namespace Pixogram.Api
            );
 
             app.UseHttpsRedirection();
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "images");
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+
+                FileProvider = new PhysicalFileProvider(path),
+                RequestPath = "/images"
+            }); ;
 
             app.UseRouting();
             app.UseAuthentication();
-            /*            app.UseStaticFiles(new StaticFileOptions()
-                        {
-                            FileProvider = new PhysicalFileProvider(
-                                    Path.Combine(Directory.GetCurrentDirectory(), "images")),
-                            RequestPath = new PathString("/images")
-                        });*/
-/*            app.UseStaticFiles(new StaticFileOptions()
-            {
-                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "images")),
-                RequestPath = new PathString("/admin")
-            });*/
-            /*        app.UseStaticFiles();*/
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
